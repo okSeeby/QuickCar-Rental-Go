@@ -224,39 +224,84 @@ class CarRentalService:
     After admin signup button is pressed on admin login page. Create admin signup frame, clear window, and place frame 
     """
     def show_admin_signup_page(self):
-        
-        #clear main frame
+        # Clear main frame
         self.clear_frame()
         
-        #admin signup title
-        tk.Label(self.main_frame, text="Admin Sign Up", font=("Arial", 24)).pack(pady=20)
+        # Configure background color
+        self.main_frame.configure(bg="#f0f4f8")  # Light background color
         
-        #name entry box
-        tk.Label(self.main_frame, text="Name").pack(pady=5)
-        self.admin_signup_name_entry = tk.Entry(self.main_frame)
-        self.admin_signup_name_entry.pack(pady=5)
+        # Title label with enhanced styling
+        tk.Label(
+            self.main_frame,
+            text="Admin Sign Up",
+            font=("Arial", 28, "bold"),
+            fg="#2c3e50",          # Dark blue-gray color
+            bg="#f0f4f8"           # Matching the frame background
+        ).pack(pady=20)
         
-        #email entry box
-        tk.Label(self.main_frame, text="Email").pack(pady=5)
-        self.admin_signup_email_entry = tk.Entry(self.main_frame)
-        self.admin_signup_email_entry.pack(pady=5)
+        # Input field styling
+        entry_bg_color = "#ecf0f1"  # Light gray for entry boxes
+        label_fg_color = "#34495e"  # Darker text color for labels
+        entry_font = ("Arial", 14)
         
-        #password entry box
-        tk.Label(self.main_frame, text="Password").pack(pady=5)
-        self.admin_signup_password_entry = tk.Entry(self.main_frame, show="*")
-        self.admin_signup_password_entry.pack(pady=5)
+        # Function to create labeled entry fields
+        def create_entry(label_text, show_char=None):
+            tk.Label(
+                self.main_frame,
+                text=label_text,
+                font=("Arial", 14, "bold"),
+                fg=label_fg_color,
+                bg="#f0f4f8"
+            ).pack(pady=5)
+            
+            entry = tk.Entry(self.main_frame, font=entry_font, bg=entry_bg_color, show=show_char)
+            entry.pack(pady=5, ipadx=5, ipady=5)
+            return entry
         
-        #phone number entry box
-        tk.Label(self.main_frame, text="Phone").pack(pady=5)
-        self.admin_signup_phone_entry = tk.Entry(self.main_frame)
-        self.admin_signup_phone_entry.pack(pady=5)
+        # Name entry box
+        self.admin_signup_name_entry = create_entry("Name")
         
-        #sign up button to continue signup and go to admin login page
-        tk.Button(self.main_frame, text="Sign Up", command=self.admin_signup).pack(pady=20)
+        # Email entry box
+        self.admin_signup_email_entry = create_entry("Email")
         
-        #back button to go to admin login page
-        tk.Button(self.main_frame, text="Back to Admin Login", command=self.show_admin_login_page).pack(pady=5)
-    
+        # Password entry box
+        self.admin_signup_password_entry = create_entry("Password", show_char="*")
+        
+        # Phone number entry box
+        self.admin_signup_phone_entry = create_entry("Phone")
+        
+        # Button styling
+        button_style = {
+            "font": ("Arial", 14, "bold"),
+            "bg": "#2980b9",          # Blue color for buttons
+            "fg": "white",            # White text for contrast
+            "activebackground": "#1f618d",  # Darker blue when pressed
+            "activeforeground": "white",
+            "padx": 20,
+            "pady": 10
+        }
+        
+        # Sign Up button
+        tk.Button(
+            self.main_frame,
+            text="Sign Up",
+            command=self.admin_signup,
+            **button_style
+        ).pack(pady=20)
+        
+        # Back button
+        tk.Button(
+            self.main_frame,
+            text="Back to Admin Login",
+            command=self.show_admin_login_page,
+            bg="#95a5a6",          # Gray color for back button
+            fg="white",
+            activebackground="#7f8c8d",
+            activeforeground="white",
+            font=("Arial", 14, "bold"),
+            padx=20,
+            pady=10
+        ).pack(pady=10)
     """
     After login button is pressed on user login page. Search for matching email and password.
     Error message if not found. Main page displayed if found
@@ -770,70 +815,168 @@ class CarRentalService:
     After view bookings button is clocked on user main page. Open new window to display orders
     """
     def view_bookings_page(self):
-        
-        #create new window
+        # Create a new window
         self.bookings_window = tk.Toplevel(self.root)
         self.bookings_window.title("My Bookings")
         self.bookings_window.geometry("1200x400")
-        
-        #my bookings title
-        tk.Label(self.bookings_window, text="My Bookings", font=("Arial", 24)).pack(pady=20)
-        
-        #create treeview to display order information
-        self.bookings_tree = ttk.Treeview(self.bookings_window, columns=("make", "model", "year", "from_date", "to_date", "status"), show="headings")
-        
-        #treeview headings
-        self.bookings_tree.heading("make", text="Make")
-        self.bookings_tree.heading("model", text="Model")
-        self.bookings_tree.heading("year", text="Year")
-        self.bookings_tree.heading("from_date", text="From Date")
-        self.bookings_tree.heading("to_date", text="To Date")
-        self.bookings_tree.heading("status", text="Status")
-        
-        #put treeview on window
-        self.bookings_tree.pack(pady=20, fill=tk.BOTH, expand=True)
-        
-        #load orders into treeview
+        self.bookings_window.configure(bg="#f0f4f8")  # Light background color
+
+        # Title label with enhanced styling
+        tk.Label(
+            self.bookings_window,
+            text="My Bookings",
+            font=("Arial", 28, "bold"),
+            fg="#2c3e50",          # Dark blue-gray color
+            bg="#f0f4f8"           # Matching the window background
+        ).pack(pady=20)
+
+        # Create Treeview with striped row colors
+        style = ttk.Style()
+        style.theme_use("clam")  # Use a clean, modern theme
+        style.configure("Treeview",
+                        background="#ecf0f1",
+                        foreground="#2c3e50",
+                        rowheight=30,
+                        fieldbackground="#ecf0f1",
+                        font=("Arial", 12))
+        style.map('Treeview', background=[('selected', '#3498db')])  # Highlight color when row is selected
+
+        # Heading style for the Treeview
+        style.configure("Treeview.Heading",
+                        font=("Arial", 14, "bold"),
+                        background="#2980b9",
+                        foreground="white")
+
+        # Create Treeview to display order information
+        self.bookings_tree = ttk.Treeview(
+            self.bookings_window,
+            columns=("make", "model", "year", "from_date", "to_date", "status"),
+            show="headings"
+        )
+
+        # Treeview headings with adjusted text alignment
+        self.bookings_tree.heading("make", text="Make", anchor="center")
+        self.bookings_tree.heading("model", text="Model", anchor="center")
+        self.bookings_tree.heading("year", text="Year", anchor="center")
+        self.bookings_tree.heading("from_date", text="From Date", anchor="center")
+        self.bookings_tree.heading("to_date", text="To Date", anchor="center")
+        self.bookings_tree.heading("status", text="Status", anchor="center")
+
+        # Set column width
+        self.bookings_tree.column("make", width=150, anchor="center")
+        self.bookings_tree.column("model", width=150, anchor="center")
+        self.bookings_tree.column("year", width=100, anchor="center")
+        self.bookings_tree.column("from_date", width=200, anchor="center")
+        self.bookings_tree.column("to_date", width=200, anchor="center")
+        self.bookings_tree.column("status", width=150, anchor="center")
+
+        # Add striped rows
+        self.bookings_tree.tag_configure('evenrow', background='#d5dbdb')
+        self.bookings_tree.tag_configure('oddrow', background='#ecf0f1')
+
+        # Pack the Treeview with padding
+        self.bookings_tree.pack(pady=20, fill=tk.BOTH, expand=True, padx=20)
+
+        # Call method to load orders into Treeview
         self.load_bookings()
 
     """
     After view all bookings button is clocked on admin main page. Open new window to display orders
     """
     def view_all_bookings_page(self):
-        
-        #create window for bookings page
+        # Create window for bookings page
         self.all_bookings_window = tk.Toplevel(self.root)
         self.all_bookings_window.title("All Bookings")
         self.all_bookings_window.geometry("1200x500")
-        
-        #all bookings title
-        tk.Label(self.all_bookings_window, text="All Bookings", font=("Arial", 24)).pack(pady=20)
-        
-        #create treeview to display order information
-        self.all_bookings_tree = ttk.Treeview(self.all_bookings_window, columns=("order_id", "customer_id", "car_id", "from_date", "to_date", "status"), show="headings")
-        
-        #treeview headings
-        self.all_bookings_tree.heading("order_id", text="Order ID")
-        self.all_bookings_tree.heading("customer_id", text="Customer ID")
-        self.all_bookings_tree.heading("car_id", text="Car ID")
-        self.all_bookings_tree.heading("from_date", text="From Date")
-        self.all_bookings_tree.heading("to_date", text="To Date")
-        self.all_bookings_tree.heading("status", text="Status")
-        
-        #put tree view on window
-        self.all_bookings_tree.pack(pady=20, fill=tk.BOTH, expand=True)
-        
-        #put entry for customerID on window
-        tk.Label(self.all_bookings_window, text="Customer ID").pack(pady=5)
-        self.customerID_entry = tk.Entry(self.all_bookings_window)
-        self.customerID_entry.pack()
-        
-        #button to send email to late user
-        tk.Button(self.all_bookings_window, text="Email User", command=self.email_user).pack(pady=20)
-        
-        #load order information onto treeview
+        self.all_bookings_window.configure(bg="#f0f4f8")  # Light background color
+
+        # Title label with enhanced styling
+        tk.Label(
+            self.all_bookings_window,
+            text="All Bookings",
+            font=("Arial", 28, "bold"),
+            fg="#2c3e50",          # Dark blue-gray color
+            bg="#f0f4f8"           # Matching the window background
+        ).pack(pady=20)
+
+        # Create Treeview with striped row colors
+        style = ttk.Style()
+        style.theme_use("clam")  # Use a clean, modern theme
+        style.configure("Treeview",
+                        background="#ecf0f1",
+                        foreground="#2c3e50",
+                        rowheight=30,
+                        fieldbackground="#ecf0f1",
+                        font=("Arial", 12))
+        style.map("Treeview", background=[("selected", "#3498db")])  # Highlight color when row is selected
+
+        # Heading style for the Treeview
+        style.configure("Treeview.Heading",
+                        font=("Arial", 14, "bold"),
+                        background="#2980b9",
+                        foreground="white")
+
+        # Create Treeview to display order information
+        self.all_bookings_tree = ttk.Treeview(
+            self.all_bookings_window,
+            columns=("order_id", "customer_id", "car_id", "from_date", "to_date", "status"),
+            show="headings"
+        )
+
+        # Treeview headings with adjusted text alignment
+        headings = [
+            ("order_id", "Order ID"),
+            ("customer_id", "Customer ID"),
+            ("car_id", "Car ID"),
+            ("from_date", "From Date"),
+            ("to_date", "To Date"),
+            ("status", "Status")
+        ]
+
+        for col, text in headings:
+            self.all_bookings_tree.heading(col, text=text, anchor="center")
+            self.all_bookings_tree.column(col, width=150, anchor="center")
+
+        # Add striped rows
+        self.all_bookings_tree.tag_configure("evenrow", background="#d5dbdb")
+        self.all_bookings_tree.tag_configure("oddrow", background="#ecf0f1")
+
+        # Pack the Treeview with padding
+        self.all_bookings_tree.pack(pady=20, fill=tk.BOTH, expand=True, padx=20)
+
+        # Label and Entry for Customer ID
+        tk.Label(
+            self.all_bookings_window,
+            text="Customer ID",
+            font=("Arial", 14, "bold"),
+            fg="#34495e",
+            bg="#f0f4f8"
+        ).pack(pady=5)
+
+        self.customerID_entry = tk.Entry(self.all_bookings_window, font=("Arial", 14), bg="#ecf0f1")
+        self.customerID_entry.pack(pady=5, ipadx=5, ipady=5)
+
+        # Button styling
+        button_style = {
+            "font": ("Arial", 14, "bold"),
+            "bg": "#2980b9",          # Blue color for button
+            "fg": "white",            # White text for contrast
+            "activebackground": "#1f618d",  # Darker blue when pressed
+            "activeforeground": "white",
+            "padx": 20,
+            "pady": 10
+        }
+
+        # Button to send email to late user
+        tk.Button(
+            self.all_bookings_window,
+            text="Email User",
+            command=self.email_user,
+            **button_style
+        ).pack(pady=20)
+
+        # Load order information into the Treeview
         self.load_all_bookings()
-    
     """
     After clicking email user button, send email to user
     """
@@ -899,69 +1042,82 @@ class CarRentalService:
     """
     After update button is clicked on update car window. Update car information on database and reload cars on main page
     """
-    def update_car(self, car_id):
-        
-        #get car info
-        make = self.update_make_entry.get()
-        model = self.update_model_entry.get()
-        year = self.update_year_entry.get()
-        price = self.update_price_entry.get()
-        
-        #update car in db
-        mycursor.execute("UPDATE cars SET make=%s, model=%s, year=%s, price=%s WHERE car_id=%s", 
-                         (make, model, year, price, car_id))
-        mydb.commit()
-        messagebox.showinfo("Success", "Car updated successfully")
-        
-        #close update window
-        self.car_update_window.destroy()
-        
-        #reload cars in main treeview
-        self.load_cars()
+    def update_car_page(self):
+        # Get car selected in treeview
+        selected_car = self.car_tree.selection()
 
-    """
-    After add car button is clicked on admin main page. Open new window for entries of car information
-    """
-    def add_car_page(self):
-        # Create new window
-        self.car_add_window = tk.Toplevel(self.root)
-        self.car_add_window.title("Add Car")
-        self.car_add_window.geometry("400x350")
-        self.car_add_window.configure(bg="#f0f8ff")  # Light blue background
+        # If no car selected
+        if not selected_car:
+            messagebox.showerror("Error", "No car selected")
+            return
 
-        # Define styles
-        label_font = ("Arial", 12, "bold")
-        entry_font = ("Arial", 12)
-        button_font = ("Arial", 14, "bold")
+        # Get carID of selection
+        car_id = self.car_tree.item(selected_car[0])["values"][0]
 
-        # Add padding for better spacing
-        padding_x = 20
-        padding_y = 10
+        # Create new window to update car
+        self.car_update_window = tk.Toplevel(self.root)
+        self.car_update_window.title("Update Car")
+        self.car_update_window.geometry("400x400")
+        self.car_update_window.configure(bg="#f0f4f8")  # Light background color
+
+        # Title label
+        tk.Label(
+            self.car_update_window,
+            text="Update Car Information",
+            font=("Arial", 20, "bold"),
+            fg="#2c3e50",       # Dark blue-gray color
+            bg="#f0f4f8"
+        ).pack(pady=20)
+
+        # Entry field styling
+        entry_bg_color = "#ecf0f1"  # Light gray background for entries
+        label_fg_color = "#34495e"  # Darker text color for labels
+        entry_font = ("Arial", 14)
+
+        # Function to create labeled entry fields
+        def create_entry(label_text):
+            tk.Label(
+                self.car_update_window,
+                text=label_text,
+                font=("Arial", 14, "bold"),
+                fg=label_fg_color,
+                bg="#f0f4f8"
+            ).pack(pady=5)
+
+            entry = tk.Entry(self.car_update_window, font=entry_font, bg=entry_bg_color)
+            entry.pack(pady=5, ipadx=5, ipady=5, fill=tk.X, padx=20)
+            return entry
 
         # Make entry box
-        tk.Label(self.car_add_window, text="Make", font=label_font, bg="#f0f8ff", fg="#2a2a2a").pack(pady=padding_y)
-        self.add_make_entry = tk.Entry(self.car_add_window, font=entry_font, width=30)
-        self.add_make_entry.pack(pady=5)
+        self.update_make_entry = create_entry("Make")
 
         # Model entry box
-        tk.Label(self.car_add_window, text="Model", font=label_font, bg="#f0f8ff", fg="#2a2a2a").pack(pady=padding_y)
-        self.add_model_entry = tk.Entry(self.car_add_window, font=entry_font, width=30)
-        self.add_model_entry.pack(pady=5)
+        self.update_model_entry = create_entry("Model")
 
         # Year entry box
-        tk.Label(self.car_add_window, text="Year (YYYY)", font=label_font, bg="#f0f8ff", fg="#2a2a2a").pack(pady=padding_y)
-        self.add_year_entry = tk.Entry(self.car_add_window, font=entry_font, width=30)
-        self.add_year_entry.pack(pady=5)
+        self.update_year_entry = create_entry("Year (YYYY)")
 
         # Price entry box
-        tk.Label(self.car_add_window, text="Price", font=label_font, bg="#f0f8ff", fg="#2a2a2a").pack(pady=padding_y)
-        self.add_price_entry = tk.Entry(self.car_add_window, font=entry_font, width=30)
-        self.add_price_entry.pack(pady=5)
+        self.update_price_entry = create_entry("Price")
 
-        # Add button to add car into db
-        tk.Button(self.car_add_window, text="Add", command=self.add_car, font=button_font, bg="#007acc", fg="white", 
-                activebackground="#005f99", activeforeground="white", relief="raised").pack(pady=20)
+        # Button styling
+        button_style = {
+            "font": ("Arial", 14, "bold"),
+            "bg": "#27ae60",           # Green button color
+            "fg": "white",             # White text for contrast
+            "activebackground": "#229954",  # Darker green when pressed
+            "activeforeground": "white",
+            "padx": 20,
+            "pady": 10
+        }
 
+        # Update button to update the car information in the database
+        tk.Button(
+            self.car_update_window,
+            text="Update",
+            command=lambda: self.update_car(car_id),
+            **button_style
+        ).pack(pady=20)
     """
     After add button is clicked on add car window. Insert new car into database and reload cars on main page.
     """
